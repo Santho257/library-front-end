@@ -32,6 +32,7 @@ import RequireAuth from './components/authentication/RequireAuth.jsx';
 import Unauthorized from './components/extras/Unauthorized.jsx';
 import useAuth from './hooks/useAuth.jsx';
 import useStomp from './hooks/useStomp.jsx';
+import ChatRoom from './components/chat-room/ChatRoom.jsx';
 
 function App() {
   const navi = useNavigate();
@@ -78,7 +79,7 @@ function App() {
       </Navbar>
       <div id='response'>
 
-        <Routes>
+        {/* <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/admin-signup' element={<AdminRegister />} />
           <Route path='/borrower-signup' element={<Register />} />
@@ -127,7 +128,8 @@ function App() {
             </Route>
           </Route>
           <Route path='/unauthorized' element={<Unauthorized />} />
-        </Routes>
+        </Routes> */}
+        <ChatRoom/>
       </div>
     </>
   );
