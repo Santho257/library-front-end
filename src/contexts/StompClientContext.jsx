@@ -29,21 +29,20 @@ export const StompContextProvider = ({ children }) => {
             console.log(err);
         }
     }, [user.token]);
-    
-    useEffect(() => {
-        stompClient?.connect({}, onConnected, onError);
-    },[stompClient]);
 
     useEffect(() => {
-        stompClient?.disconnect();
+        stompClient?.connect({}, onConnected, onError);
+    }, [stompClient]);
+
+    useEffect(() => {
         connect();
     }, [user.token, connect]);
 
-    
+
     const onConnected = () => {
         const subscribe = async () => {
-            stompClient.subscribe(`/user/${jwtDecode(user.token).sub}/queue/messages`, messageReceived);
             stompClient.subscribe("/topic/public", messageReceived);
+            stompClient.subscribe(`/user/${jwtDecode(user.token).sub}/queue/messages`, messageReceived);
             await stompClient.send(`/app/user.connect`, {}, JSON.stringify(user));
         }
         subscribe();
@@ -60,11 +59,10 @@ export const StompContextProvider = ({ children }) => {
         if (receivedMessage.messageType == "ASSIGNED") {
             updateReceiver({ email: receivedMessage.email, name: receivedMessage.name, status: receivedMessage.email })
         }
-        else if (receivedMessage.messageType == "RECEIVED") {
-            if (receivedMessage.sender == receiver.email) {
-                updateMessages(receivedMessage);
-            }
+        else if (receivedMessage.messageType == "CHAT") {
+            updateMessages(receivedMessage);
         }
     }
-    return <StompContext.Provider value={{ stompClient,updateStompClient }}>{children}</StompContext.Provider>
+
+    return <StompContext.Provider value={{ stompClient, updateStompClient }}>{children}</StompContext.Provider>
 }

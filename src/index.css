@@ -1,0 +1,26 @@
+.message-area{
+    margin: 2% auto;
+    height: 75vh;
+    overflow-y: auto;
+}
+
+li{
+    list-style: none;
+    margin: 10px 0;
+}
+
+
+.message{
+    background-color: blue;
+    color: #fff;
+    max-width: 75%;
+    margin: 3px 0;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.message.self{
+    background-color: white;
+    color: blue;
+    text-align: right;
+}

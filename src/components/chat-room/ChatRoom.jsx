@@ -3,15 +3,21 @@ import useAuth from "../../hooks/useAuth";
 import useReceiver from "../../hooks/useReceiver";
 import useStomp from "../../hooks/useStomp";
 import useMessages from "../../hooks/useMessages";
+import MessageArea from "./MessageArea";
+import SendMessage from "./SendMessage";
+import BotInteraction from "./BotInteraction";
 
 const ChatRoom = () => {
-    const {user} = useAuth();
-    const {receiver, updateReceiver} = useReceiver();
-    const {stompClient} = useStomp();
-    const {messages, updateMessages} = useMessages();
+    const { receiver, updateReceiver } = useReceiver();
 
     return (
         <>
+            {(receiver.email)
+            ?<>
+                <MessageArea />
+                <SendMessage />
+            </>
+            :<BotInteraction />}
         </>
     )
 }

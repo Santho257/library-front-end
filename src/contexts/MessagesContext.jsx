@@ -7,15 +7,20 @@ import useAuth from "../hooks/useAuth";
 export const MessagesContext = createContext();
 
 export const MessagesContextProvider = ({ children }) => {
-    const receiver = useReceiver();
+    const {receiver} = useReceiver();
     const auth = useAuth();
     const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
+    const updateMessages = useCallback((message) => {
+        messages.push(message);
+        setMessages([...messages]);
+    }, []);
+
+    const fetchMessages = useCallback(() => {
         const fetch = async () => {
             try {
-                if (!receiver.receiver.email) return;
-                const result = await axios.get(`${baseUrl}/messages/${receiver.receiver.email}`, { headers: { Authorization: `Bearer ${auth.user.token}` } });
+                if (!receiver.email) return;
+                const result = await axios.get(`${baseUrl}/messages/${receiver.email}`, { headers: { Authorization: `Bearer ${auth.user.token}` } });
                 setMessages(result.data);
             }
             catch (err) {
@@ -23,14 +28,7 @@ export const MessagesContextProvider = ({ children }) => {
             }
         }
         fetch();
-    }, [receiver.receiver])
-
-    const updateMessages = useCallback((message) => {
-        messages.push(message);
-        setMessages([...messages]);
-    }, []);
-
-
-
-    return <MessagesContext.Provider value={{ messages, updateMessages }}>{children}</MessagesContext.Provider>
+    }, [receiver.receiver]);
+    
+    return <MessagesContext.Provider value={{ messages, updateMessages, fetchMessages }}>{children}</MessagesContext.Provider>
 }

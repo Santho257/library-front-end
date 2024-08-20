@@ -37,7 +37,7 @@ import ChatRoom from './components/chat-room/ChatRoom.jsx';
 function App() {
   const navi = useNavigate();
   const auth = useAuth();
-  const {stompClient, updateStompClient} = useStomp();
+  const { stompClient, updateStompClient } = useStomp();
 
   const links = [{ page: "/books/list", head: "Books", show: true }, { page: "/authors/list", head: "Authors", show: true }, { page: "/borrowers/list", head: "Borrowers", show: auth.user.token && auth.user.role == "ADMIN" }, { page: "/library", head: "Library", show: auth.user.token }, { page: "/login", head: "Login", show: !auth.user.token }, { page: "/admin-signup", head: "Admin Signup", show: !auth.user.token }, { page: "/borrower-signup", head: "Borrower Signup", show: !auth.user.token }
   ];
@@ -79,10 +79,14 @@ function App() {
       </Navbar>
       <div id='response'>
 
-        {/* <Routes>
+        <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/admin-signup' element={<AdminRegister />} />
           <Route path='/borrower-signup' element={<Register />} />
+
+          <Route element={<RequireAuth/>}>
+            <Route path='/help' element={<ChatRoom />} />
+          </Route>
 
           <Route path='/authors' element={<Author />}>
             <Route path='list' element={<ListAuthor />} />
@@ -128,8 +132,8 @@ function App() {
             </Route>
           </Route>
           <Route path='/unauthorized' element={<Unauthorized />} />
-        </Routes> */}
-        <ChatRoom/>
+        </Routes>
+
       </div>
     </>
   );
