@@ -16,6 +16,10 @@ export const MessagesContextProvider = ({ children }) => {
         setMessages([...messages]);
     }, []);
 
+    const clearMessages = useCallback(() => {
+        setMessages([]);
+    })
+
     const fetchMessages = useCallback(() => {
         const fetch = async () => {
             try {
@@ -30,5 +34,5 @@ export const MessagesContextProvider = ({ children }) => {
         fetch();
     }, [receiver.receiver]);
     
-    return <MessagesContext.Provider value={{ messages, updateMessages, fetchMessages }}>{children}</MessagesContext.Provider>
+    return <MessagesContext.Provider value={{ messages, updateMessages, clearMessages,fetchMessages }}>{children}</MessagesContext.Provider>
 }

@@ -14,7 +14,14 @@ export const ReceiverContextProvider = ({ children }) => {
     });
 
     const updateReceiver = useCallback((receiver) => {
-        setReceiver(receiver);
+        if(receiver)
+            setReceiver(receiver);
+        else
+            setReceiver({
+                email: "",
+                status: "",
+                name: ""
+            });
     }, []);
 
     return <ReceiverContext.Provider value={{ receiver, updateReceiver }}>{children}</ReceiverContext.Provider>

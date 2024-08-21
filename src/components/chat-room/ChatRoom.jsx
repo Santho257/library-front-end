@@ -8,7 +8,7 @@ import SendMessage from "./SendMessage";
 import BotInteraction from "./BotInteraction";
 
 const ChatRoom = () => {
-    const { receiver, updateReceiver } = useReceiver();
+    const { receiver } = useReceiver();
 
     return (
         <>
