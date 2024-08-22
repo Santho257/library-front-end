@@ -1,22 +1,29 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Container, FormControl, FormLabel, FormSelect, FormText } from "react-bootstrap";
+import useAuth from "../../hooks/useAuth";
+import { baseUrl } from "../services/Helpers";
 
 function AddBook() {
+    const { user } = useAuth();
     const genres = ["STORY", "SCI_FI", "FANTASY", "HISTORY", "ROMANCE", "HORROR", "THRILLER", "BIOGRAPHY",
-        "AUTO_BIOGRAPHY", "ADVENTURE", "COMIC", "FICTIONAL", "THOUGHTS_AND_HABITS"]
+        "AUTO_BIOGRAPHY", "ADVENTURE", "COMIC", "FICTIONAL", "THOUGHTS_AND_HABITS"];
+
     const [authors, setAuthors] = useState([]);
-    const baseUrl = "http://localhost:8888";
+    const [title, setTitle] = useState('');
+    const [authorId, setAuthorId] = useState(0);
+    const [genre, setGenre] = useState('');
+    const [publicationDate, setPublicationDate] = useState('');
 
     const add = async () => {
         console.log(document.querySelector("#publicationDate").value);
         try {
             const result = await axios.post(`${baseUrl}/books`, {
-                title: document.querySelector("#title").value,
-                authorId: document.querySelector("#authorId").value,
-                genre: document.querySelector("#genre").value,
-                publicationDate: document.querySelector("#publicationDate").value
-            });
+                title,
+                authorId,
+                genre,
+                publicationDate
+            }, { headers: { Authorization: `Bearer ${user.token}` } });
             console.log(result.data);
             document.querySelector("#result").innerText = result.data.message;
         }
@@ -45,9 +52,12 @@ function AddBook() {
         <>
             <Container className="mt-3">
                 <FormLabel htmlFor="title">Title</FormLabel>
-                <FormControl id="title" type="text" placeholder="title" ></FormControl><br />
+                <FormControl id="title" type="text" placeholder="title"
+                value={title} onChange={(e) => setTitle(e.target.value)}></FormControl><br />
+                
+                
                 <FormLabel htmlFor="authorId">Author</FormLabel>
-                <FormSelect name="authorId" id="authorId" className="form-select">
+                <FormSelect name="authorId" id="authorId" className="form-select" value={authorId} onChange={(e) => setAuthorId(e.target.value)}>
                     <option value=""></option>
                     {
                         authors.map((au) => {
@@ -56,7 +66,7 @@ function AddBook() {
                     }
                 </FormSelect><br />
                 <label htmlFor="genre">Genre</label>
-                <FormSelect name="genre" id="genre" className="form-select">
+                <FormSelect name="genre" id="genre" className="form-select" value={genre} onChange={(e) => setGenre(e.target.value)}>
                     <option value=""></option>
                     {
                         genres.map((gen, i) => {
@@ -65,7 +75,7 @@ function AddBook() {
                     }
                 </FormSelect><br />
                 <FormLabel htmlFor="publicationDate">Publication date</FormLabel>
-                <FormControl type="date" name="publicationDate" id="publicationDate" /><br />
+                <FormControl type="date" name="publicationDate" id="publicationDate" value={publicationDate} onChange={(e) => setPublicationDate(e.target.value)} /><br />
                 <Button className="btn btn-primary" onClick={add}>Add</Button>
             </Container>
             <Container><p id="result"></p></Container>

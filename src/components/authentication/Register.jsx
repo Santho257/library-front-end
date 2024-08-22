@@ -29,7 +29,6 @@ export default function Register() {
     try {
       const result = await axios.post(`${baseUrl}/auth/sign-up`, loginDetail);
       auth.updateUser(result.data);
-      localStorage.setItem("user", JSON.stringify(result.data));
       navigator("/books/list");
     }
     catch (err) {

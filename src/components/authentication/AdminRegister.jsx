@@ -28,7 +28,7 @@ export default function AdminRegister() {
     e.preventDefault();
     try {
       const result = await axios.post(`${baseUrl}/auth/admin-signup`, loginDetail);
-      auth.setUser(result.data);
+      auth.updateUser(result.data);
       navigator("/books/list");
     }
     catch (err) {

@@ -3,17 +3,17 @@ import { useEffect } from "react";
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Container, Table } from "react-bootstrap";
+import { baseUrl } from "../services/Helpers";
 
 export default function DeleteBorrower() {
-    const baseUrl = "http://localhost:8888";
-    const auth = useAuth();
+    const {user} = useAuth();
     const [count, setCount] = useState(0);
     const [borrowers, setBorrowers] = useState([]);
 
     useEffect(() => {
         async function fetch() {
             try {
-                let result = await axios.get(`${baseUrl}/borrowers`, { headers: { Authorization: `Bearer ${auth.user.token}` } });
+                let result = await axios.get(`${baseUrl}/borrowers`, { headers: { Authorization: `Bearer ${user.token}` } });
                 if (result.data.statusCode != "OK") {
                     document.querySelector("#deletedMessage").innerText = result.data.message;
                 }
@@ -28,14 +28,14 @@ export default function DeleteBorrower() {
     }, [count]);
 
     const deleteBorrower = async (id) => {
-        let result = await axios.delete(`${baseUrl}/borrowers/${id}`, {headers: {Authorization: `Bearer ${auth.user.token}`}});
+        let result = await axios.delete(`${baseUrl}/borrowers/${id}`, {headers: {Authorization: `Bearer ${user.token}`}});
         document.querySelector("#deletedMessage").innerText = result.data.message;
         setCount(count + 1)
     };
 
     return (
         <>
-            <Container><p id="deletedMessage"></p></Container>
+            <Container><p id="deletedMessage" className="text-center text-success"></p></Container>
             <Table className="container" striped hover>
                 <thead className="table-primary">
                     <tr>
@@ -51,7 +51,7 @@ export default function DeleteBorrower() {
                                 <tr key={borrower.username}>
                                     <td>{i + 1}</td>
                                     <td>{borrower.username}</td>
-                                    <td><a className="link" onClick={() => deleteBorrower(borrower.username)}>delete</a></td>
+                                    <td><a className="link" type="button" onClick={() => deleteBorrower(borrower.username)}>delete</a></td>
                                 </tr>
                             )
                         })

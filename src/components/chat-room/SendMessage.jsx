@@ -28,7 +28,7 @@ export default function SendMessage() {
     return (
         <Container>
             <InputGroup>
-                <FormControl value={message} onChange={(e) => setMessage(e.target.value)} placeholder='message...'/>
+                <FormControl as="textarea" rows="1" className='scroll-none' type='text-area' value={message} onChange={(e) => setMessage(e.target.value)} placeholder='message...'/>
                 <Button onClick={sendMessage}>Send</Button>
             </InputGroup>
         </Container>

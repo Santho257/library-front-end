@@ -1,23 +1,26 @@
-import { useEffect } from "react";
-import useAuth from "../../hooks/useAuth";
 import useReceiver from "../../hooks/useReceiver";
-import useStomp from "../../hooks/useStomp";
-import useMessages from "../../hooks/useMessages";
 import MessageArea from "./MessageArea";
 import SendMessage from "./SendMessage";
 import BotInteraction from "./BotInteraction";
+import useAuth from "../../hooks/useAuth";
+import { Container } from "react-bootstrap";
 
 const ChatRoom = () => {
     const { receiver } = useReceiver();
+    const { user } = useAuth();
 
     return (
         <>
             {(receiver.email)
-            ?<>
-                <MessageArea />
-                <SendMessage />
-            </>
-            :<BotInteraction />}
+                ? <>
+                    <MessageArea />
+                    <SendMessage />
+                </>
+                : (user.role == "BORROWER")
+                    ? <BotInteraction />
+                    : <Container>
+                        <h6 className="text-danger text-center">No Borrower assigned yet</h6>
+                    </Container>}
         </>
     )
 }

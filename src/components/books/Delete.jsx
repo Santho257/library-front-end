@@ -2,10 +2,11 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Container, Table } from "react-bootstrap";
+import { baseUrl } from "../services/Helpers";
+import useAuth from "../../hooks/useAuth";
 
 function DeleteBook() {
-    const baseUrl = "http://localhost:8888";
-
+    const {user} = useAuth();
     const [count, setCount] = useState(0);
     const [books, setBooks] = useState([]);
     useEffect(() => {
@@ -25,14 +26,16 @@ function DeleteBook() {
     }, [count]);    
 
     const deleteBook = async (id) => {
-        let result = await axios.delete(`${baseUrl}/books/${id}`);
+        let result = await axios.delete(`${baseUrl}/books/${id}`,{headers: {
+            Authorization: `Bearer ${user.token}`
+        }});
         document.querySelector("#deletedMessage").innerText = result.data.message;
         setCount(count+1)
     };
 
     return (
         <>
-            <Container><p id="deletedMessage"></p></Container>
+            <Container><p id="deletedMessage" className="text-success text-center"></p></Container>
             <Table striped className="container">
                 <thead className="table-primary">
                     <tr>
@@ -50,7 +53,7 @@ function DeleteBook() {
                                     <td>{i + 1}</td>
                                     <td>{book.title}</td>
                                     <td>{book.author.name}</td>
-                                    <td><a className="link" onClick={() => deleteBook(book.id)}>delete</a></td>
+                                    <td><a type="button" className="link" onClick={() => deleteBook(book.id)}>delete</a></td>
                                 </tr>
                             )
                         })

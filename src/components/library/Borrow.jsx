@@ -2,17 +2,17 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Button, Container, FormLabel, FormSelect, Row } from "react-bootstrap";
+import { baseUrl } from "../services/Helpers";
 
 export default function Borrow() {
     const [books, setBooks] = useState([]);
-    const auth = useAuth();
-    const baseUrl = "http://localhost:8888";
+    const {user} = useAuth();
 
     const add = async () => {
         try {
             const result = await axios.post(`${baseUrl}/library/borrow`, {
                 bookId: document.querySelector("#book").value
-            }, { headers: { Authorization: `Bearer ${auth.user.token}` } });
+            }, { headers: { Authorization: `Bearer ${user.token}` } });
             console.log(result.data);
             document.querySelector("#result").classList.add("text-success");
             document.querySelector("#result").innerText = result.data.message;
@@ -54,7 +54,7 @@ export default function Borrow() {
                 </FormSelect><br />
                 <Button onClick={add}>Add</Button>
             </Container>
-            <Container><Row className="flex justify-content-center"><p id="result"></p></Row></Container>
+            <Container><p id="result" className="text-center"></p></Container>
         </>
     );
 }

@@ -62,6 +62,9 @@ export const StompContextProvider = ({ children }) => {
         else if (receivedMessage.messageType == "CHAT") {
             updateMessages(receivedMessage);
         }
+        else if (receivedMessage.messageType == "FAILED"){
+            console.log(payload.body);
+        }
     }
 
     return <StompContext.Provider value={{ stompClient, updateStompClient }}>{children}</StompContext.Provider>

@@ -33,13 +33,24 @@ import Unauthorized from './components/extras/Unauthorized.jsx';
 import useAuth from './hooks/useAuth.jsx';
 import useStomp from './hooks/useStomp.jsx';
 import ChatRoom from './components/chat-room/ChatRoom.jsx';
+import Bot from './components/Bot.jsx';
+import ViewBotQuestions from './components/Bot/View.jsx';
+import AddBotQuestion from './components/Bot/Add.jsx';
+import DeleteBotQuestion from './components/Bot/Delete.jsx';
 
 function App() {
   const navi = useNavigate();
   const auth = useAuth();
   const { stompClient, updateStompClient } = useStomp();
 
-  const links = [{ page: "/books/list", head: "Books", show: true }, { page: "/authors/list", head: "Authors", show: true }, { page: "/borrowers/list", head: "Borrowers", show: auth.user.token && auth.user.role == "ADMIN" }, { page: "/library", head: "Library", show: auth.user.token }, { page: "/login", head: "Login", show: !auth.user.token }, { page: "/admin-signup", head: "Admin Signup", show: !auth.user.token }, { page: "/borrower-signup", head: "Borrower Signup", show: !auth.user.token }
+  const links = [{ page: "/books/list", head: "Books", show: true }, 
+    { page: "/authors/list", head: "Authors", show: true }, 
+    { page: "/borrowers/list", head: "Borrowers", show: auth.user.token && auth.user.role == "ADMIN" }, 
+    { page: "/bot/view", head: "Bot", show: auth.user.token && auth.user.role == "ADMIN" }, 
+    { page: "/library", head: "Library", show: auth.user.token }, 
+    { page: "/login", head: "Login", show: !auth.user.token }, 
+    { page: "/admin-signup", head: "Admin Signup", show: !auth.user.token }, 
+    { page: "/borrower-signup", head: "Borrower Signup", show: !auth.user.token }
   ];
 
   const logout = (e) => {
@@ -106,6 +117,14 @@ function App() {
             <Route element={<RequireAuth roles={"ADMIN"} />}>
               <Route path='add' element={<AddBook />} />
               <Route path='remove' element={<DeleteBook />} />
+            </Route>
+          </Route>
+
+          <Route element={<RequireAuth roles={"ADMIN"}/>}>
+          <Route path='/bot' element={<Bot />} >
+              <Route path='add' element={<AddBotQuestion />} />
+              <Route path='view' element={<ViewBotQuestions />} />
+              <Route path='remove' element={<DeleteBotQuestion />} />
             </Route>
           </Route>
 

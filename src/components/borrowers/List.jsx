@@ -7,11 +7,11 @@ import { Container, Table } from "react-bootstrap";
 
 export default function ListBorrowers() {
     const [borrowers, setBorrowers] = useState([]);
-    const auth = useAuth();
+    const {user} = useAuth();
     useEffect(() => {
         async function fetch() {
             try {
-                let result = await axios.get(`${baseUrl}/borrowers`, { headers: { Authorization: `Bearer ${auth.user.token}` } });
+                let result = await axios.get(`${baseUrl}/borrowers`, { headers: { Authorization: `Bearer ${user.token}` } });
                 if (result.data.statusCode != "OK") {
                     console.log(result.data.statusCode);
                 }

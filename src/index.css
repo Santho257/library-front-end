@@ -1,7 +1,19 @@
+*{
+    scroll-behavior: smooth;
+}
+
 .message-area{
     margin: 2% auto;
     height: 75vh;
     overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.scroll-none{
+    scrollbar-width: none;
+}
+.message-area.bot{
+    height: 85vh;
 }
 
 li{
@@ -13,7 +25,8 @@ li{
 .message{
     background-color: blue;
     color: #fff;
-    max-width: 75%;
+    text-wrap: wrap;
+    display: inline;
     margin: 3px 0;
     padding: 5px 10px;
     border-radius: 10px;
