@@ -6,25 +6,23 @@ import { useEffect } from "react";
 function Library() {
     const navi = useNavigate();
     const auth = useAuth();
-    
+
     return <>
-        <Container className="m-2">
-            <Row className="justify-content-center">
-                {auth.user?.role == "ADMIN" && <Col md="auto">
-                    <button className="btn btn-primary" onClick={() => navi("history")}>History</button>
-                </Col>}
-                {auth.user?.role == "BORROWER" && <Col md="auto">
-                    <button className="btn btn-primary" onClick={() => navi("borrow")}>Borrow</button>
-                </Col>}
-                {auth.user?.role == "BORROWER" &&<Col md="auto">
-                    <button className="btn btn-primary" onClick={() => navi("return")}>Return</button>
-                </Col>}
-                {auth.user?.role == "ADMIN" && <Col md="auto">
-                    <button className="btn btn-primary" onClick={() => navi("unreturned")}>Unreturned</button>
-                </Col>}
-            </Row>
+        <Container className="mt-2 mb-2 align-items-center d-flex">
+            <Container>
+                <button className="btn btn-primary" onClick={() => navi("history")}>History</button>
+            </Container>
+            {auth.user?.role == "BORROWER" && <Container>
+                <button className="btn btn-primary" onClick={() => navi("borrow")}>Borrow</button>
+            </Container>}
+            {auth.user?.role == "BORROWER" && <Container>
+                <button className="btn btn-primary" onClick={() => navi("return")}>Return</button>
+            </Container>}
+            {auth.user?.role == "ADMIN" && <Container>
+                <button className="btn btn-primary" onClick={() => navi("unreturned")}>Unreturned</button>
+            </Container>}
         </Container>
-        <Outlet/>
+        <Outlet />
     </>
 }
 export default Library;

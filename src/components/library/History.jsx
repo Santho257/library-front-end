@@ -3,22 +3,33 @@ import { useEffect, useState } from "react";
 import useAuth from '../../hooks/useAuth'
 import {baseUrl} from '../services/Helpers'
 import { Container, FormSelect, Table } from "react-bootstrap";
+import useReceiver from "../../hooks/useReceiver";
 
 
 export default function History() {
     const [borrower, setBorrower] = useState("");
     const [borrowers, setBorrowers] = useState([]);
     const [library, setLibrary] = useState([]);
-    const auth = useAuth();
+    const {user} = useAuth();
+    const {receiver} = useReceiver();
     useEffect(() => {
         async function fetch() {
-            console.log(auth.use)
+            if(user.role == "BORROWER"){
+                try{
+                    const result = await axios.get(`${baseUrl}/library/borrower`,{headers: {Authorization: `Bearer ${user.token}`}});
+                    setLibrary(result.data.message);
+                }
+                catch(err){
+                    console.log(err);
+                }
+                return;
+            }
             try {
                 let result;
                 if(!borrower)
-                    result = await axios.get(`${baseUrl}/library`,{headers: {Authorization: `Bearer ${auth.user.token}`}});
+                    result = await axios.get(`${baseUrl}/library`,{headers: {Authorization: `Bearer ${user.token}`}});
                 else
-                    result = await axios.get(`${baseUrl}/library/borrower/${borrower}`, {headers: {Authorization: `Bearer ${auth.user.token}`}})
+                    result = await axios.get(`${baseUrl}/library/borrower/${borrower}`, {headers: {Authorization: `Bearer ${user.token}`}})
                 if (result.data.statusCode != "OK") {
                     console.log(result.data.statusCode);
                 }
@@ -32,9 +43,12 @@ export default function History() {
     }, [borrower]);
 
     useEffect(() => {
+        if(user.role == "BORROWER"){
+            return;
+        } 
         async function fetch() {
             try {
-                let result = await axios.get(`${baseUrl}/borrowers`, {headers: {Authorization: `Bearer ${auth.user.token}`}});
+                let result = await axios.get(`${baseUrl}/borrowers`, {headers: {Authorization: `Bearer ${user.token}`}});
                 if (result.data.statusCode != "OK") {
                     console.log(result.data.statusCode);
                 }
@@ -49,15 +63,16 @@ export default function History() {
 
 
     return <>
-        <Container className="mb-3">
+        {(user.role =="ADMIN") && <Container className="mb-3">
             Borrower:
-            <FormSelect name="bwr" id="bwr" className="form-select" onChange={() => setBorrower(bwr.value)}>
+            <FormSelect name="bwr" id="bwr" className="form-select" onChange={() => setBorrower(bwr.value) } value={borrower}>
                 <option value=""></option>
+                {(receiver.email)&&<option value={receiver.email}>Support: {receiver.name}</option>}
                 {borrowers.map(brw => {
-                    return <option key={brw.username} value={brw.username}>{brw.username}</option>
+                    return receiver.email != brw.username && <option key={brw.username} value={brw.username}>{brw.username}</option>
                 })}
             </FormSelect>
-        </Container>
+        </Container>}
         <Table className="container" striped hover>
             <thead className="table-primary">
                 <tr>

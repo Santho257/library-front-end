@@ -1,6 +1,7 @@
 import './components/services/Polyfills.js'
 import { Route, Routes, useNavigate } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Author from './components/Author.jsx';
 import Book from './components/Book.jsx'
 import Borrower from './components/Borrower.jsx';
@@ -37,30 +38,52 @@ import Bot from './components/Bot.jsx';
 import ViewBotQuestions from './components/Bot/View.jsx';
 import AddBotQuestion from './components/Bot/Add.jsx';
 import DeleteBotQuestion from './components/Bot/Delete.jsx';
+import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import useReceiver from './hooks/useReceiver.jsx';
 
 function App() {
   const navi = useNavigate();
   const auth = useAuth();
+  const {receiver, updateReceiver} = useReceiver();
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      console.log('Cleaning up before window close');
+      confirm("Window Closes")
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+
   const { stompClient, updateStompClient } = useStomp();
 
-  const links = [{ page: "/books/list", head: "Books", show: true }, 
-    { page: "/authors/list", head: "Authors", show: true }, 
-    { page: "/borrowers/list", head: "Borrowers", show: auth.user.token && auth.user.role == "ADMIN" }, 
-    { page: "/bot/view", head: "Bot", show: auth.user.token && auth.user.role == "ADMIN" }, 
-    { page: "/library", head: "Library", show: auth.user.token }, 
-    { page: "/login", head: "Login", show: !auth.user.token }, 
-    { page: "/admin-signup", head: "Admin Signup", show: !auth.user.token }, 
-    { page: "/borrower-signup", head: "Borrower Signup", show: !auth.user.token }
+  const links = [{ page: "/books/list", head: "Books", show: true },
+  { page: "/authors/list", head: "Authors", show: true },
+  { page: "/borrowers/list", head: "Borrowers", show: auth.user.token && auth.user.role == "ADMIN" },
+  { page: "/bot/view", head: "Bot", show: auth.user.token && auth.user.role == "ADMIN" },
+  { page: "/library", head: "Library", show: auth.user.token },
+  { page: "/login", head: "Login", show: !auth.user.token },
+  { page: "/admin-signup", head: "Admin Signup", show: !auth.user.token },
+  { page: "/borrower-signup", head: "Borrower Signup", show: !auth.user.token }
   ];
 
   const logout = (e) => {
     e.preventDefault();
     const clearStomp = async () => {
-      await stompClient.send(`/app/user.disconnect`, {}, JSON.stringify({}));
+      await stompClient.send(`/app/user.disconnect`, {}, JSON.stringify({
+        receiver: receiver.email
+      }));
       updateStompClient(null);
     }
     clearStomp();
     auth.updateUser({ token: "", role: "" });
+    updateReceiver()
     navi("/login");
   };
 
@@ -95,7 +118,7 @@ function App() {
           <Route path='/admin-signup' element={<AdminRegister />} />
           <Route path='/borrower-signup' element={<Register />} />
 
-          <Route element={<RequireAuth/>}>
+          <Route element={<RequireAuth />}>
             <Route path='/help' element={<ChatRoom />} />
           </Route>
 
@@ -120,8 +143,8 @@ function App() {
             </Route>
           </Route>
 
-          <Route element={<RequireAuth roles={"ADMIN"}/>}>
-          <Route path='/bot' element={<Bot />} >
+          <Route element={<RequireAuth roles={"ADMIN"} />}>
+            <Route path='/bot' element={<Bot />} >
               <Route path='add' element={<AddBotQuestion />} />
               <Route path='view' element={<ViewBotQuestions />} />
               <Route path='remove' element={<DeleteBotQuestion />} />
@@ -140,8 +163,8 @@ function App() {
 
           <Route element={<RequireAuth />}>
             <Route path='/library' element={<Library />} >
+              <Route path='history' element={<History />} />
               <Route element={<RequireAuth roles={"ADMIN"} />}>
-                <Route path='history' element={<History />} />
                 <Route path='unreturned' element={<UnReturned />} />
               </Route>
               <Route element={<RequireAuth roles={"BORROWER"} />}>
@@ -152,8 +175,9 @@ function App() {
           </Route>
           <Route path='/unauthorized' element={<Unauthorized />} />
         </Routes>
-
       </div>
+      <ToastContainer
+      />
     </>
   );
 }

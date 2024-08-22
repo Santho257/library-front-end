@@ -5,13 +5,14 @@ import { Button, Container, FormLabel, FormSelect, Row } from "react-bootstrap";
 import { baseUrl } from "../services/Helpers";
 
 export default function Borrow() {
+    const [bookId, setBookId] = useState(-1);
     const [books, setBooks] = useState([]);
     const {user} = useAuth();
 
     const add = async () => {
         try {
             const result = await axios.post(`${baseUrl}/library/borrow`, {
-                bookId: document.querySelector("#book").value
+                bookId
             }, { headers: { Authorization: `Bearer ${user.token}` } });
             console.log(result.data);
             document.querySelector("#result").classList.add("text-success");
@@ -44,7 +45,7 @@ export default function Borrow() {
         <>
             <Container>
                 <FormLabel htmlFor="book">Book</FormLabel>
-                <FormSelect name="book" id="book" className="form-control">
+                <FormSelect name="book" id="book" className="form-control" value={bookId} onChange={(e) => setBookId(e.target.value)}>
                     <option value=""></option>
                     {
                         books.map((bk) => {

@@ -22,14 +22,14 @@ export default function ViewBotQuestions() {
     }, [])
 
     return (
-        <Container>
+        <Container className='mt-5'>
             {questions.map((question) => {
                 return <React.Fragment key={question.id}>
                     <Row>
-                        <Col>{question.question}</Col>
+                        <Col><p className='bold'>{question.question}</p></Col>
                     </Row>
                     <Row>
-                        <Col md={{ offset: 1 }}>{question.answer}</Col>
+                        <Col md={{ offset: 1 }}><p>{question.answer}</p></Col>
                     </Row>
                 </React.Fragment>
             })}
