@@ -33,7 +33,7 @@ li{
 }
 
 .message.self{
-    background-color: white;
-    color: blue;
+    background-color: #c5c4c4;
+    color: black;
     text-align: right;
 }

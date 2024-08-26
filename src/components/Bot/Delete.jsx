@@ -35,10 +35,10 @@ function DeleteBotQuestion() {
             {questions.map((question) => {
                 return <React.Fragment key={question.id}>
                     <Row>
-                        <Col>{question.question} <a className="link" type="button" onClick={() => deleteQuestion(question.id)}>delete</a></Col>
+                        <Col><p className='bold'>{question.question} <a className="link" type="button" onClick={() => deleteQuestion(question.id)}>delete</a></p></Col>
                     </Row>
                     <Row>
-                        <Col md={{ offset: 1 }}>{question.answer}</Col>
+                        <Col md={{ offset: 1 }}><p>{question.answer}</p></Col>
                     </Row>
                 </React.Fragment>
             })}

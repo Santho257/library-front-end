@@ -6,14 +6,14 @@ import useAuth from "../hooks/useAuth";
 import useReceiver from "../hooks/useReceiver";
 import useMessages from "../hooks/useMessages";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 
 export const StompContext = createContext();
 
 export const StompContextProvider = ({ children }) => {
     const [stompClient, setStompClient] = useState(null);
     const { user } = useAuth();
-    const { receiver, updateReceiver } = useReceiver();
+    const { updateReceiver } = useReceiver();
     const { updateMessages } = useMessages();
 
     const updateStompClient = (stomp) => {
@@ -58,19 +58,21 @@ export const StompContextProvider = ({ children }) => {
         console.log(payload.body);
         const receivedMessage = JSON.parse(payload.body);
         if (receivedMessage.messageType == "ASSIGNED") {
-            if(receivedMessage.email)
+            if (receivedMessage.email)
                 toast.success(`Assined with :: ${receivedMessage.name}`);
-            else if(user.role == "BORROWER")
+            else if (user.role == "BORROWER")
                 toast.success(`Thanks for contacting us`)
             else
                 toast.success(`Help closes`)
             updateReceiver({ email: receivedMessage.email, name: receivedMessage.name, status: receivedMessage.email })
         }
         else if (receivedMessage.messageType == "CHAT") {
-            toast(receivedMessage.content)
+            toast.info(receivedMessage.content, {
+                theme: "dark"
+            })
             updateMessages(receivedMessage);
         }
-        else if (receivedMessage.messageType == "FAILED"){
+        else if (receivedMessage.messageType == "FAILED") {
             toast.error(receivedMessage.name);
             console.log(payload.body);
         }
