@@ -2,183 +2,55 @@ import './components/services/Polyfills.js'
 import { Route, Routes, useNavigate } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
-import Author from './components/Author.jsx';
-import Book from './components/Book.jsx'
-import Borrower from './components/Borrower.jsx';
-import Library from './components/Library.jsx';
 import AddAuthor from './components/author/Add.jsx';
-import ListAuthor from './components/author/List.jsx';
-import DeleteAuthor from './components/author/Delete.jsx';
-import SortAuthor from './components/author/Sort.jsx';
-import ListBook from './components/books/List.jsx';
 import AddBook from './components/books/Add.jsx';
-import DeleteBook from './components/books/Delete.jsx';
-import SortBook from './components/books/Sort.jsx';
-import ListBorrowers from './components/borrowers/List.jsx';
-import AddBorrower from './components/borrowers/Add.jsx';
-import DeleteBorrower from './components/borrowers/Delete.jsx';
-import SortBorrower from './components/borrowers/Sort.jsx';
-import History from './components/library/History.jsx';
-import Borrow from './components/library/Borrow.jsx';
-import Return from './components/library/Return.jsx';
-import UnReturned from './components/library/UnReturned.jsx';
-import SearchAuthor from './components/author/Search.jsx';
-import SearchBooks from './components/books/Search.jsx';
-import SearchBorrower from './components/borrowers/Search.jsx';
 import Login from './components/authentication/Login.jsx';
 import AdminRegister from './components/authentication/AdminRegister.jsx';
 import Register from './components/authentication/Register.jsx';
-import { Container, Navbar, NavbarBrand, NavItem, NavLink } from 'react-bootstrap';
 import RequireAuth from './components/authentication/RequireAuth.jsx';
 import Unauthorized from './components/extras/Unauthorized.jsx';
-import useAuth from './hooks/useAuth.jsx';
-import useStomp from './hooks/useStomp.jsx';
 import ChatRoom from './components/chat-room/ChatRoom.jsx';
-import Bot from './components/Bot.jsx';
-import ViewBotQuestions from './components/Bot/View.jsx';
 import AddBotQuestion from './components/Bot/Add.jsx';
-import DeleteBotQuestion from './components/Bot/Delete.jsx';
-import { useEffect } from 'react';
+import React from 'react';
 import { ToastContainer } from 'react-toastify';
-import useReceiver from './hooks/useReceiver.jsx';
+import Book from './components/redesign/Book.jsx';
+import Author from './components/redesign/Author.jsx';
+import NavBar from './components/redesign/NavBar.jsx';
+import Borrower from './components/redesign/Borrower.jsx';
+import Bot from './components/redesign/Bot.jsx';
+import Library from './components/redesign/Library.jsx';
+import NotFound404 from './components/extras/NotFound404.jsx';
 
 function App() {
-  const navi = useNavigate();
-  const auth = useAuth();
-  const {receiver, updateReceiver} = useReceiver();
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      console.log('Cleaning up before window close');
-      confirm("Window Closes")
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
-
-
-  const { stompClient, updateStompClient } = useStomp();
-
-  const links = [{ page: "/books/list", head: "Books", show: true },
-  { page: "/authors/list", head: "Authors", show: true },
-  { page: "/borrowers/list", head: "Borrowers", show: auth.user.token && auth.user.role == "ADMIN" },
-  { page: "/bot/view", head: "Bot", show: auth.user.token && auth.user.role == "ADMIN" },
-  { page: "/library", head: "Library", show: auth.user.token },
-  { page: "/login", head: "Login", show: !auth.user.token },
-  { page: "/admin-signup", head: "Admin Signup", show: !auth.user.token },
-  { page: "/borrower-signup", head: "Borrower Signup", show: !auth.user.token }
-  ];
-
-  const logout = (e) => {
-    e.preventDefault();
-    const clearStomp = async () => {
-      await stompClient.send(`/app/user.disconnect`, {}, JSON.stringify({
-        receiver: receiver.email
-      }));
-      updateStompClient(null);
-    }
-    clearStomp();
-    auth.updateUser({ token: "", role: "" });
-    updateReceiver()
-    navi("/login");
-  };
-
   return (
-    <>
-      <Navbar className="navbar-dark bg-dark">
-        <Container>
-          <NavbarBrand>Library Management System</NavbarBrand>
-          <ul className="navbar-nav" id="nav">
-            {links.map((link, i) => {
-              return link.show && <NavItem key={i}>
-                <NavLink href="" onClick={() => navi(link.page)}>{link.head}</NavLink>
-              </NavItem>
-            })}
-            {auth.user.token && <NavItem>
-              <NavLink href="" onClick={logout}>Logout</NavLink>
-            </NavItem>}
-
-            {auth.user.token && <NavItem>
-              <NavLink href="" onClick={(e) => {
-                e.preventDefault();
-                navi("/help")
-              }}>Help</NavLink>
-            </NavItem>}
-          </ul>
-        </Container>
-      </Navbar>
+    <React.Fragment>
+      <NavBar />
       <div id='response'>
-
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/admin-signup' element={<AdminRegister />} />
           <Route path='/borrower-signup' element={<Register />} />
+          <Route path='/authors' element={<Author />} />
+          <Route path='/books' element={<Book />} />
 
           <Route element={<RequireAuth />}>
             <Route path='/help' element={<ChatRoom />} />
-          </Route>
-
-          <Route path='/authors' element={<Author />}>
-            <Route path='list' element={<ListAuthor />} />
-            <Route path='sort' element={<SortAuthor />} />
-            <Route path='search' element={<SearchAuthor />} />
-
-            <Route element={<RequireAuth roles={"ADMIN"} />}>
-              <Route path='add' element={<AddAuthor />} />
-              <Route path='remove' element={<DeleteAuthor />} />
-            </Route>
-          </Route>
-
-          <Route path='/books' element={<Book />} >
-            <Route path='list' element={<ListBook />} />
-            <Route path='sort' element={<SortBook />} />
-            <Route path='search' element={<SearchBooks />} />
-            <Route element={<RequireAuth roles={"ADMIN"} />}>
-              <Route path='add' element={<AddBook />} />
-              <Route path='remove' element={<DeleteBook />} />
-            </Route>
+            <Route path='/library' element={<Library />} />
           </Route>
 
           <Route element={<RequireAuth roles={"ADMIN"} />}>
-            <Route path='/bot' element={<Bot />} >
-              <Route path='add' element={<AddBotQuestion />} />
-              <Route path='view' element={<ViewBotQuestions />} />
-              <Route path='remove' element={<DeleteBotQuestion />} />
-            </Route>
-          </Route>
-
-          <Route element={<RequireAuth roles={"ADMIN"} />}>
-            <Route path='/borrowers' element={<Borrower />} >
-              <Route path='add' element={<AddBorrower />} />
-              <Route path='list' element={<ListBorrowers />} />
-              <Route path='remove' element={<DeleteBorrower />} />
-              <Route path='sort' element={<SortBorrower />} />
-              <Route path='search' element={<SearchBorrower />} />
-            </Route>
-          </Route>
-
-          <Route element={<RequireAuth />}>
-            <Route path='/library' element={<Library />} >
-              <Route path='history' element={<History />} />
-              <Route element={<RequireAuth roles={"ADMIN"} />}>
-                <Route path='unreturned' element={<UnReturned />} />
-              </Route>
-              <Route element={<RequireAuth roles={"BORROWER"} />}>
-                <Route path='borrow' element={<Borrow />} />
-                <Route path='return' element={<Return />} />
-              </Route>
-            </Route>
+            <Route path='/authors/add' element={<AddAuthor />} />
+            <Route path='/books/add' element={<AddBook />} />
+            <Route path='/bot' element={<Bot />} />
+            <Route path='/borrowers' element={<Borrower />} />
+            <Route path='/bot/add' element={<AddBotQuestion />} />
           </Route>
           <Route path='/unauthorized' element={<Unauthorized />} />
+          <Route path='*' element={<NotFound404/>}/>
         </Routes>
       </div>
-      <ToastContainer
-      />
-    </>
+      <ToastContainer />
+    </React.Fragment>
   );
 }
 

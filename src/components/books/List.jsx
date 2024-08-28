@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Card, CardBody, CardImg, CardImgOverlay, CardTitle, Col, Container, ListGroup, Row, Table } from "react-bootstrap";
+import { baseUrl } from "../services/Helpers";
 
 function ListBook() {
-    const baseUrl = "http://localhost:8888"
     const [books, setBooks] = useState([]);
     useEffect(() => {
         async function fetch() {
@@ -22,33 +22,31 @@ function ListBook() {
         fetch();
     }, []);
     return (
-        <Container>
-            <Table striped hover>
-                <thead className="table-primary">
-                    <tr>
-                        <th>S.No</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Genre</th>
-                        <th>Pub. date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        books.map((book, i) => {
-                            return (
-                                <tr key={book.id}>
-                                    <td>{i + 1}</td>
-                                    <td>{book.title}</td>
-                                    <td>{book.author.name}</td>
-                                    <td>{book.genre}</td>
-                                    <td>{book.publicationDate}</td>
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </Table>
+        <Container id="resultArea" className="my-3">
+            <h5 className="text-center">Books</h5>
+            {/* <p className="text-danger">{errText}</p> */}
+            <Row className="g-3">
+                {books.map((book) => {
+                    return (
+                        <Col key={book.id} sm={6} md={4} lg={3}>
+                            <Card style={{height: "300px"}}>
+                                <CardImg variant="top" style={{ height: "150px"}} className="bg-dark"/>
+                                <CardImgOverlay>
+                                    <CardTitle className="text-light">{book.title}</CardTitle>
+                                </CardImgOverlay>
+                                <CardBody className="d-flex flex-column justify-content-between">
+                                    <ListGroup className="list-group-flush">
+                                        <ListGroup.Item>{book.author.name}</ListGroup.Item>
+                                        <ListGroup.Item>{book.genre}</ListGroup.Item>
+                                        <ListGroup.Item>{book.publicationDate}</ListGroup.Item>
+                                    </ListGroup>
+                                    <Card.Link type="button">Borrow</Card.Link>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    )
+                })}
+            </Row>
         </Container>
     )
 }

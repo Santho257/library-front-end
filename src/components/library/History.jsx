@@ -69,7 +69,7 @@ export default function History() {
                 <option value=""></option>
                 {(receiver.email)&&<option value={receiver.email}>Support: {receiver.name}</option>}
                 {borrowers.map(brw => {
-                    return receiver.email != brw.username && <option key={brw.username} value={brw.username}>{brw.username}</option>
+                    return receiver.email != brw.username && brw.role == "BORROWER" && <option key={brw.username} value={brw.username}>{brw.username}</option>
                 })}
             </FormSelect>
         </Container>}
@@ -78,7 +78,7 @@ export default function History() {
                 <tr>
                     <th>S.No</th>
                     <th>Title</th>
-                    <th>Borrower</th>
+                    <th>{!borrower && "Borrower"}</th>
                     <th>Borrowed On</th>
                     <th>Returned On</th>
                 </tr>
@@ -90,7 +90,7 @@ export default function History() {
                             <tr key={lib.id}>
                                 <td>{i + 1}</td>
                                 <td>{lib.title}</td>
-                                <td>{lib.borrowerId}</td>
+                                <td>{!borrower && lib.borrowerId}</td>
                                 <td>{lib.borrowedOn}</td>
                                 <td>{lib.returnedOn ? lib.returnedOn : "--"}</td>
                             </tr>

@@ -2,8 +2,6 @@ import { Container, Row } from "react-bootstrap";
 
 export default function Unauthorized() {
     return <Container>
-        <Row className="justify-content-center align-items-center">
-            <h3>You are not authorized to perform this function</h3>
-        </Row>
+       <h3 className="text-danger text-center">You are not allowed to perform this.</h3>
     </Container>
 }

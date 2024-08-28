@@ -13,7 +13,7 @@
     scrollbar-width: none;
 }
 .message-area.bot{
-    height: 85vh;
+    height: 75vh;
 }
 
 li{
@@ -36,4 +36,29 @@ li{
     background-color: #c5c4c4;
     color: black;
     text-align: right;
+}
+
+.focus-no-shadow:focus{
+    box-shadow: none;
+}
+
+.bg-secondary{
+    background-color:   #dbdbdb !important;
+}
+
+.card{
+    border-color: #bbb6b6;
+}
+.book-card{ 
+    height: 350px;
+}
+.author-card{
+    height: 250px;
+}
+.borrower-card{
+    height: 300px;
+}
+
+.bg-dark{
+    background-color: #072057 !important;
 }

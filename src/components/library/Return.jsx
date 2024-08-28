@@ -53,7 +53,7 @@ export default function Return(){
                                 <td>{lib.title}</td>
                                 <td>{lib.borrowerId}</td>
                                 <td>{lib.borrowedOn}</td>
-                                <td><a type="button" className="link"onClick={() => returnBook(lib.bookId)}>return</a></td>
+                                <td><a type="button" className="link"onClick={() => returnBook(lib.id)}>return</a></td>
                             </tr>
                         )
                     })

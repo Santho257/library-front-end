@@ -9,7 +9,7 @@ export default function Borrow() {
     const [books, setBooks] = useState([]);
     const {user} = useAuth();
 
-    const add = async () => {
+    const borrow = async () => {
         try {
             const result = await axios.post(`${baseUrl}/library/borrow`, {
                 bookId
@@ -53,7 +53,7 @@ export default function Borrow() {
                         })
                     }
                 </FormSelect><br />
-                <Button onClick={add}>Add</Button>
+                <Button onClick={borrow}>Borrow</Button>
             </Container>
             <Container><p id="result" className="text-center"></p></Container>
         </>

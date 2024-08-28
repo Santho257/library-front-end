@@ -4,12 +4,16 @@ import useAuth from '../../hooks/useAuth';
 import { Col, Container, ListGroupItem, Row } from 'react-bootstrap';
 import { baseUrl } from '../services/Helpers';
 import useStomp from '../../hooks/useStomp';
+import { jwtDecode } from 'jwt-decode';
 
 export default function BotInteraction() {
     const { user } = useAuth();
     const [msgs, setMsgs] = useState([]);
     const { stompClient } = useStomp();
-    useEffect(() => { fetch() }, []);
+    useEffect(() => {
+        fetch();
+    }, []
+    );
 
     useEffect(() => {
         document.querySelector('#auto-scroll').scrollTop = document.querySelector('#auto-scroll').scrollHeight;
@@ -17,9 +21,8 @@ export default function BotInteraction() {
 
     const fetch = async () => {
         try {
+            console.log(msgs)
             const result = await axios.get(`${baseUrl}/bot`, { headers: { Authorization: `Bearer ${user.token}` } });
-            console.log(result.data)
-
             setMsgs([...msgs, ...result.data.map(msg => { return { id: msg.id, content: msg.question, clickable: true } })]);
         }
         catch (err) {
@@ -56,11 +59,19 @@ export default function BotInteraction() {
                 <p role="button" onClick={assignAdmin} className='message'>Yes</p>
             </Container>
             <Container className='message-area bot mt-10' id='auto-scroll'>
+
                 <ul>
-                    <li onClick={fetch}></li>
+                    <li className={`d-flex`}>
+                        <p role='text' className='message'>{`Hii ${jwtDecode(user.token).sub}!`}</p>
+                    </li>
+                    <li className='d-flex'>
+                        <p role='text' className='message'>{`Choose from the below questions to help you.
+        If it doesn't solve your problem, Click talk to admin on the top.`}</p>
+                    </li>
+
                     {msgs.map((msg, i) =>
                         <li key={i} className={`d-flex ${(msg.self && 'flex-row-reverse')}`}>
-                            <p role={msg.clickable ?"button":"text"} onClick={msg.clickable ? () => { getAnswer(msg.id) } : undefined} className={`message ${(msg.self && "self")}`}>{msg.content}</p>
+                            <p role={msg.clickable ? "button" : "text"} onClick={msg.clickable ? () => { getAnswer(msg.id) } : undefined} className={`message ${(msg.self && "self")}`}>{msg.content}</p>
                         </li>
                     )}
                 </ul>

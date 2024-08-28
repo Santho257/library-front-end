@@ -50,6 +50,9 @@ function AddBook() {
 
     return (
         <>
+            <Container>
+                <h3 className="text-dark     text-center">Add Book</h3>
+            </Container>
             <Container className="mt-3">
                 <FormLabel htmlFor="title">Title</FormLabel>
                 <FormControl id="title" type="text" placeholder="title"

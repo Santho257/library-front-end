@@ -27,7 +27,7 @@ export default function Login() {
     try {
       const result = await axios.post(`${baseUrl}/auth/login`, loginDetail);
       auth.updateUser(result.data);
-      navigator("/books/list");
+      navigator("/books");
     }
     catch (err) {
       setAlert({
