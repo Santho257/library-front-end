@@ -46,7 +46,7 @@ function App() {
             <Route path='/borrowers' element={<Borrower />} />
             <Route path='/bot/add' element={<AddBotQuestion />} />
           </Route>
-          <Route path='/unaut horized' element={<Unauthorized />} />
+          <Route path='/unauthorized' element={<Unauthorized />} />
           <Route path='*' element={<NotFound404/>}/>
         </Routes>
       </div>
