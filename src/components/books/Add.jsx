@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Container, FormControl, FormLabel, FormSelect, FormText } from "react-bootstrap";
 import useAuth from "../../hooks/useAuth";
 import { baseUrl } from "../services/Helpers";
+import { toast } from "react-toastify";
 
 function AddBook() {
     const { user } = useAuth();
@@ -24,11 +25,14 @@ function AddBook() {
                 genre,
                 publicationDate
             }, { headers: { Authorization: `Bearer ${user.token}` } });
-            console.log(result.data);
-            document.querySelector("#result").innerText = result.data.message;
+            toast.success(result.data.message, {position: "top-center"});
+            setTitle('');
+            setAuthorId(0);
+            setGenre('');
+            setPublicationDate('');
         }
         catch (err) {
-            document.querySelector("#result").innerText = err.response.data.message;
+            toast.error(err.response?.data?.message, {position: "top-center"});
         }
     }
 
