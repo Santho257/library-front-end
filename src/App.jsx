@@ -1,5 +1,5 @@
 import './components/services/Polyfills.js'
-import { Route, Routes, useNavigate } from 'react-router';
+import { Route, Routes, Navigate } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import AddAuthor from './components/author/Add.jsx';
@@ -27,6 +27,7 @@ function App() {
       <NavBar />
       <div id='response'>
         <Routes>
+          <Route path='/' element={<Navigate to="/books"/>}/>
           <Route path='/login' element={<Login />} />
           <Route path='/admin-signup' element={<AdminRegister />} />
           <Route path='/borrower-signup' element={<Register />} />
@@ -45,7 +46,7 @@ function App() {
             <Route path='/borrowers' element={<Borrower />} />
             <Route path='/bot/add' element={<AddBotQuestion />} />
           </Route>
-          <Route path='/unauthorized' element={<Unauthorized />} />
+          <Route path='/unaut horized' element={<Unauthorized />} />
           <Route path='*' element={<NotFound404/>}/>
         </Routes>
       </div>
