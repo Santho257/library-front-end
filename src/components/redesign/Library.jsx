@@ -107,7 +107,7 @@ export default function Library() {
                         return (
                             <Col key={lib.id} md={6} lg={4}>
                                 <Card>
-                                    <CardHeader>
+                                    <CardHeader className="bg-primary">
                                         {lib.title}
                                     </CardHeader>
                                     <CardBody>
