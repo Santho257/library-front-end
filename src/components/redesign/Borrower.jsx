@@ -78,6 +78,7 @@ function Borrower() {
                 </header>
                 <Row className="g-3 mt-2">
                     {borrowers.map((borrower) => {
+                        
                         return (
                             <Col key={borrower.username} md={6} lg={4}>
                                 <Card className="borrower-card">

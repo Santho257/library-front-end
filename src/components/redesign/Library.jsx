@@ -107,11 +107,11 @@ export default function Library() {
                         return (
                             <Col key={lib.id} md={6} lg={4}>
                                 <Card>
-                                    <CardHeader className="bg-primary">
+                                    <CardHeader className="bg-info">
                                         {lib.title}
                                     </CardHeader>
                                     <CardBody>
-                                        {(!borrower || user.role == "BORROWER") && <CardText>Borrower: {lib.borrowerId}</CardText>}
+                                        {(!borrower || user.role == "BORROWER") && <CardText>Borrower: <span className="text-blue">{lib.borrowerId}</span></CardText>}
                                         <CardText>Borrowed On: {lib.borrowedOn}</CardText>
                                         <CardText>Return On:
                                             {(lib.returnedOn)
