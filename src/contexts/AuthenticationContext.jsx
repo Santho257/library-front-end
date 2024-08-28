@@ -1,5 +1,4 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import useStomp from "../hooks/useStomp";
 
 export const AuthenticationContext = createContext();
 

@@ -13,6 +13,7 @@ function AddAuthor() {
             name
         },{headers:{Authorization: `Bearer ${user.token}`}});
         toast.success(result.data.message,{position: "top-center"});
+        setName("");
     }
     return (
         <>
