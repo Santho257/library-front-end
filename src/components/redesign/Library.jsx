@@ -9,17 +9,21 @@ import { toast } from "react-toastify";
 
 export default function Library() {
     const [borrower, setBorrower] = useState("");
+    const [book, setBook] = useState(-1);
     const [borrowers, setBorrowers] = useState([]);
+    const [books, setBooks] = useState([]);
     const [library, setLibrary] = useState([]);
     const [count, setCount] = useState(0);
     const [isUnreturned, setIsUnreturned] = useState(false);
     const { user } = useAuth();
     const { receiver } = useReceiver();
+
     useEffect(() => {
         all();
-    }, [borrower, count]);
+    }, [count]);
 
     const all = async () => {
+        if(borrower != "" || book != -1)    return;
         setIsUnreturned(false);
         if (user.role == "BORROWER") {
             try {
@@ -32,7 +36,7 @@ export default function Library() {
             return;
         }
         try {
-            const result = await axios.get(`${baseUrl}/library${borrower && `/borrower/${borrower}`}`, { headers: { Authorization: `Bearer ${user.token}` } });
+            const result = await axios.get(`${baseUrl}/library`, { headers: { Authorization: `Bearer ${user.token}` } });
             setLibrary(result.data.message);
         }
         catch (err) {
@@ -45,7 +49,9 @@ export default function Library() {
         async function fetch() {
             try {
                 const result = await axios.get(`${baseUrl}/borrowers`, { headers: { Authorization: `Bearer ${user.token}` } });
+                const bookResult = await axios.get(`${baseUrl}/books`, { headers: { Authorization: `Bearer ${user.token}` } });
                 setBorrowers(result.data.message);
+                setBooks(bookResult.data.message);
             }
             catch (err) {
                 console.log(err);
@@ -55,6 +61,8 @@ export default function Library() {
     }, []);
 
     const unreturned = () => {
+        setBook(-1);
+        setBorrower("");
         setIsUnreturned(true);
         async function fetch() {
             try {
@@ -69,7 +77,6 @@ export default function Library() {
     }
 
     const returnBook = (id) => {
-        console.log("Returning...")
         const rtn = async () => {
             try {
                 const result = await axios.post(`${baseUrl}/library/return/${id}`, {}, { headers: { Authorization: `Bearer ${user.token}` } });
@@ -85,6 +92,42 @@ export default function Library() {
         rtn();
     };
 
+    useEffect(() => {
+        if(borrower == ""){
+            setCount(count+1);
+            return;
+        }
+        const brwChange = async () => {
+            try {
+                const result = await axios.get(`${baseUrl}/library/borrower/${borrower}`, { headers: { Authorization: `Bearer ${user.token}` } });
+                setLibrary(result.data.message);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        setBook(-1);
+        brwChange();
+    },[borrower]);
+    useEffect( () => {
+        if(book == -1){
+            setCount(count+1);
+            return;
+        }
+        const bookChange = async () => {
+            try {
+                const result = await axios.get(`${baseUrl}/library/book/${book}`, { headers: { Authorization: `Bearer ${user.token}` } });
+                console.log(result.data);
+                setLibrary(result.data);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        setBorrower("");
+        bookChange();
+    },[book]);
+
     return (
         <Container className="pt-2">
             <header className="d-flex justify-content-between">
@@ -92,18 +135,28 @@ export default function Library() {
                 {isUnreturned ? <Button onClick={all}>All History</Button> : <Button onClick={unreturned}>Unreturned</Button>}
                 {user.role == "ADMIN" && <InputGroup className="w-auto">
                     <InputGroupText>Borrower</InputGroupText>
-                    <FormSelect value={borrower} onChange={(e) => { setBorrower(e.target.value); }}>
+                    <FormSelect value={borrower} onChange={(e) => { setBorrower(e.target.value);
+                     }}>
                         <option value=""></option>
-                        {(receiver.email) && <option value={receiver.email}>Support: {receiver.name}</option>}
                         {borrowers.map(brw => {
                             return receiver.email != brw.username && brw.role == "BORROWER" && <option key={brw.username} value={brw.username}>{brw.username}</option>
+                        })}
+                    </FormSelect>
+                </InputGroup>}
+                {user.role == "ADMIN" && <InputGroup className="w-auto">
+                    <InputGroupText>Book</InputGroupText>
+                    <FormSelect value={book} onChange={(e) => { setBook(e.target.value);}}>
+                        <option value={-1}></option>
+                        {(receiver.email) && <option value={receiver.email}>Support: {receiver.name}</option>}
+                        {books.map(book => {
+                            return <option key={book.id} value={book.id}>{book.title}</option>
                         })}
                     </FormSelect>
                 </InputGroup>}
             </header>
             <Row className="g-3 my-2">
                 {
-                    library.map((lib) => {
+                    library.length > 0 ? library.map((lib) => {
                         return (
                             <Col key={lib.id} md={6} lg={4}>
                                 <Card>
@@ -113,18 +166,18 @@ export default function Library() {
                                     <CardBody>
                                         {(!borrower || user.role == "BORROWER") && <CardText>Borrower: <span className="text-blue">{lib.borrowerId}</span></CardText>}
                                         <CardText>Borrowed On: {lib.borrowedOn}</CardText>
-                                        <CardText>Return On:
-                                            {(lib.returnedOn)
-                                                ? lib.returnedOn
-                                                : (user.role == "BORROWER")
-                                                    ? <Button onClick={() => returnBook(lib.id)}>Return</Button>
-                                                    : "Not Returned"}
-                                        </CardText>
+                                        {(lib.returnedOn)
+                                            ?
+                                            <CardText>Return On: {lib.returnedOn}</CardText>
+                                            : (user.role == "BORROWER")
+                                                ? <Button onClick={() => returnBook(lib.id)}>Return</Button>
+                                                : <CardText>Not Returned</CardText>
+                                        }
                                     </CardBody>
                                 </Card>
                             </Col>
-                        )
-                    })
+                        ) 
+                    }): <p className="text-center text-danger">No data available</p>
                 }
             </Row>
         </Container>
